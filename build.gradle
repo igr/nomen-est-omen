@@ -1,0 +1,15 @@
+group 'com.oblac'
+
+apply plugin: 'java'
+
+version=1.0
+
+sourceCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.12'
+}
