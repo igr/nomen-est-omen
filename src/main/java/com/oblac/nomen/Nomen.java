@@ -7,6 +7,9 @@ import java.util.Random;
  */
 public class Nomen {
 
+	/**
+	 * Returns short random name that consist of an adjective and human name.
+	 */
 	public static String randomShortName() {
 		return randomShortName(0);
 	}
@@ -20,6 +23,9 @@ public class Nomen {
 		return name;
 	}
 
+	/**
+	 * Returns longer random name that consist of an adjective, color and human name.
+	 */
 	public static String randomName() {
 		return randomName(0);
 	}
@@ -35,6 +41,8 @@ public class Nomen {
 
 	/**
 	 * Returns random string.
+	 * @param list array of strings
+	 * @return random string from given array
 	 */
 	protected static String random(String... list) {
 		int index = rnd.nextInt(list.length);
