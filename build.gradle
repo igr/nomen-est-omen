@@ -1,13 +1,46 @@
-group 'com.oblac'
-
-apply plugin: 'java'
-
-version=1.0
-
-sourceCompatibility = 1.7
+plugins {
+    id "com.jfrog.bintray" version "1.6"
+}
 
 repositories {
     mavenCentral()
+    jcenter()
+
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'com.oblac.nomen'
+version = 1.0
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+
+    configurations = ['archives']
+
+    dryRun = false
+    publish = true
+
+    pkg {
+        userOrg = 'oblac'
+        repo = 'java'
+        name = "com.oblac:${project.name}"
+        desc = 'Random name generator'
+        licenses = ['BSD 2-Clause']
+        vcsUrl = 'https://github.com/igorspasic/nomen-est-omen'
+        issueTrackerUrl = 'https://github.com/igorspasic/nomen-est-omen/issues'
+        publicDownloadNumbers = true
+
+        version {
+            name = project.version
+            vcsTag = project.version
+        }
+    }
 }
 
 task wrapper(type: Wrapper) {
