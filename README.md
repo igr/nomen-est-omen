@@ -3,10 +3,10 @@
 _"Your name is your destiny"_, so be sure you pick a good name.
 This Java library may help you with generating awesome name.
 
-The generate name consist of:
+The generated name consist of:
 
 + adjective
-+ optional color
++ (optional) color name
 + person name
 
 For example, you can get names such: `hungry_navy_babbage`
