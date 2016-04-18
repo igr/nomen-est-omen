@@ -34,6 +34,8 @@ artifacts {
     archives javadocJar
 }
 
+// MAVEN
+
 bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_KEY')
@@ -56,6 +58,60 @@ bintray {
         version {
             name = project.version
             vcsTag = project.version
+        }
+    }
+}
+
+
+ploadArchives {
+    repositories.mavenDeployer {
+        customizePom(pom, project)
+
+        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+    }
+}
+
+def customizePom(pom, gradleProject) {
+    pom.whenConfigured { generatedPom ->
+
+        // eliminate test-scoped dependencies (no need in maven central POMs)
+        generatedPom.dependencies.removeAll { dep ->
+            dep.scope == "test"
+        }
+
+        // add all items necessary for maven central publication
+        generatedPom.project {
+            name = gradleProject.moduleName
+            description = gradleProject.moduleDescription
+            url = 'https://github.com/igorspasic/nomen-est-omen'
+            organization {
+                name = 'Oblac'
+                url = 'http://oblac.com'
+            }
+            issueManagement {
+                system = 'GitHub'
+                url = 'https://github.com/igorspasic/nomen-est-omen/issues'
+            }
+            licenses {
+                license {
+                    name 'The New BSD License'
+                    url 'https://github.com/igorspasic/nomen-est-omen/blob/master/LICENSE'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                url = 'https://github.com/igorspasic/nomen-est-omen/'
+                connection = 'scm:git:git://github.com/igorspasic/nomen-est-omen.git'
+                developerConnection = 'scm:git:ssh://git@github.com/igorspasic/nomen-est-omen.git'
+            }
+            developers {
+                developer {
+                    id = 'igor'
+                    name = 'Igor Spasic'
+                    email = 'igor@jodd.org'
+                    timezone = '+1'
+                }
+            }
         }
     }
 }
