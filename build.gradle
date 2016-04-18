@@ -63,7 +63,7 @@ bintray {
 }
 
 
-ploadArchives {
+uploadArchives {
     repositories.mavenDeployer {
         customizePom(pom, project)
 
