@@ -9,6 +9,7 @@ repositories {
 }
 
 apply plugin: 'java'
+apply plugin: 'signing'
 apply plugin: 'maven'
 
 group = 'com.oblac.nomen'
@@ -30,9 +31,15 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 
 artifacts {
     archives jar
+
     archives sourcesJar
     archives javadocJar
 }
+
+signing {
+    sign configurations.archives
+}
+
 
 // MAVEN
 
@@ -62,12 +69,16 @@ bintray {
     }
 }
 
+install {
+    repositories.mavenInstaller {
+        customizePom(pom, project)
+    }
+}
 
 uploadArchives {
     repositories.mavenDeployer {
-        customizePom(pom, project)
-
         beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+        customizePom(pom, project)
     }
 }
 
@@ -81,8 +92,8 @@ def customizePom(pom, gradleProject) {
 
         // add all items necessary for maven central publication
         generatedPom.project {
-            name = gradleProject.moduleName
-            description = gradleProject.moduleDescription
+            name = "Nomen est Omen"
+            description = "Random names generator"
             url = 'https://github.com/igorspasic/nomen-est-omen'
             organization {
                 name = 'Oblac'
