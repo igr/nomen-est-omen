@@ -1,12 +1,12 @@
 # Nomen est Omen
 
 _"Your name is your destiny"_, so be sure you pick a good name.
-This Java library may help you with generating awesome name.
+This Java library helps with generating some super-awesome names :)
 
-The generated name consist of:
+Generated names, at this moment, may consist of:
 
 + adjective
-+ (optional) color name
++ color name
 + person name
 
 For example, you can get names such: `hungry_navy_babbage`
@@ -20,17 +20,17 @@ It's complicated.
 
 In your Gradle or Maven project, add:
 
-    com.oblac:nomen-est-omen:1.0
+    com.oblac:nomen-est-omen:1.1
 
 ### 2. Use it in Java
 
-If you want a short name (just adjective and person name):
-
-	Nomen.randomShortName();
-
-If you want a longer name:
+If you just want a short name (adjective and person name):
 
 	Nomen.randomName();
+
+If you want to build your own template, e.g.:
+
+	Nomen.est().adjective().color().person().get();
 
 That is it.
 
@@ -42,4 +42,4 @@ It is so beautiful, that it deserves Java port :)
 
 ## License
 
-BSD
+[BSD](LICENSE)
