@@ -1,6 +1,4 @@
-package com.oblac.oblac;
-
-import com.oblac.nomen.Nomen;
+package com.oblac.nomen;
 
 /**
  * Test version.

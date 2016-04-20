@@ -1,4 +1,4 @@
-package com.oblac.oblac;
+package com.oblac.nomen;
 
 import org.junit.Test;
 
