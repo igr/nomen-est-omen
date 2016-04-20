@@ -1,12 +1,21 @@
 package com.oblac.oblac;
 
-import com.oblac.nomen.Nomen;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class NomenTest {
 
+	@Test
 	public void testShortName() {
-		String name = Nomen.randomShortName();
-
-		assert name.contains("_");
+		String name = new TestNomen().adjective().person().count().get();
+		assertEquals("jodd_jodd", name);
 	}
+
+	@Test
+	public void testShortName_withCount() {
+		String name = new TestNomen().adjective().person().count().get(1);
+		assertEquals("jodd_jodd1", name);
+	}
+
 }

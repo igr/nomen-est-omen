@@ -5,7 +5,6 @@ plugins {
 repositories {
     mavenCentral()
     jcenter()
-
 }
 
 apply plugin: 'java'
@@ -19,6 +18,13 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+// -----------------------------------------------------------------------------
+// MAVEN
+
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
@@ -27,7 +33,6 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
-
 
 artifacts {
     archives jar
@@ -39,9 +44,6 @@ artifacts {
 signing {
     sign configurations.archives
 }
-
-
-// MAVEN
 
 bintray {
     user = System.getenv('BINTRAY_USER')
