@@ -22,7 +22,7 @@ It's complicated.
 
 In your Gradle or Maven project, add:
 
-    com.oblac:nomen-est-omen:1.1
+    com.oblac:nomen-est-omen:1.2
 
 ### 2. Use it
 
