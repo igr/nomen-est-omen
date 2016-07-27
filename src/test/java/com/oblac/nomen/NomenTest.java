@@ -14,7 +14,7 @@ public class NomenTest {
 
 	@Test
 	public void testShortName_withCount() {
-		String name = new TestNomen().adjective().person().count().get(1);
+		String name = new TestNomen().adjective().person().count().withCount(1).get();
 		assertEquals("jodd_jodd1", name);
 	}
 

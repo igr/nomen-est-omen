@@ -7,13 +7,13 @@ import java.util.Random;
  */
 public class Nomen {
 
-	private static final char MACRO_A = 'A';
-	private static final char MACRO_C = 'C';
-	private static final char MACRO_P = 'P';
-	private static final char MACRO_COUNT = '.';
+	protected static final char MACRO_A = 'A';
+	protected static final char MACRO_C = 'C';
+	protected static final char MACRO_P = 'P';
+	protected static final char MACRO_COUNT = '.';
 
-	private String template = "";
-	private String separator = "_";
+	protected String template = "";
+	protected String separator = "_";
 
 	/**
 	 * Starts with name building.
@@ -62,55 +62,15 @@ public class Nomen {
 		return this;
 	}
 
-	/**
-	 * Generates name based on given template.
-	 */
-	public String get() {
-		return get(0);
+	public Nomen withCount(int count) {
+		return new NomenRuntime(this).withCount(count);
 	}
 
 	/**
 	 * Generates name based on given template.
 	 */
-	public String get(int no) {
-		char[] chars = template.toCharArray();
-		StringBuilder out = new StringBuilder();
-
-		int ndx = 0;
-
-		for (char c : chars) {
-			String[] source = null;
-
-			switch (c) {
-				case MACRO_A:
-					source = Adjectives.LIST;
-					break;
-				case MACRO_C:
-					source = Colors.LIST;
-					break;
-				case MACRO_P:
-					source = People.LIST;
-					break;
-				case MACRO_COUNT:
-					if (no > 0) {
-						out.append(no);
-					}
-					break;
-				default:
-					throw new IllegalArgumentException("No!");
-			}
-
-			if (source != null) {
-				if (ndx > 0) {
-					out.append(separator);
-				}
-				out.append(random(source));
-			}
-
-			ndx++;
-		}
-
-		return out.toString();
+	public String get() {
+		return new NomenRuntime(this).get();
 	}
 
 	/**
@@ -125,7 +85,7 @@ public class Nomen {
 	 * optional count.
 	 */
 	public static String randomName(int no) {
-		return Nomen.est().adjective().person().count().get(no);
+		return Nomen.est().adjective().person().count().withCount(no).get();
 	}
 
 	/**
