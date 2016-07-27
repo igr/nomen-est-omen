@@ -21,10 +21,10 @@ public class NomenTest {
 
 	@Test
 	public void testUsage() {
-		String name = Nomen.est().adjective().superb().person().get();
+		String name = Nomen.est().adjective().superb().person().pokemon().get();
 		assertNotNull(name);
 
-		Nomen uidgen = Nomen.est().adjective().superb().person();
+		Nomen uidgen = Nomen.est().adjective().superb().person().pokemon();
 		assertNotNull(uidgen.get());
 	}
 

@@ -44,6 +44,9 @@ public class NomenOmen extends Nomen {
 				case MACRO_P:
 					source = People.LIST;
 					break;
+				case MACRO_K:
+					source = Pokemon.LIST;
+					break;
 				case MACRO_S:
 					source = Superb.LIST;
 					break;
@@ -73,6 +76,9 @@ public class NomenOmen extends Nomen {
 		return name;
 	}
 
+	/**
+	 * Stolen from Jodd (http://jodd.org).
+	 */
 	public String replace(String s, String sub, String with) {
 		int c = 0;
 		int i = s.indexOf(sub, c);

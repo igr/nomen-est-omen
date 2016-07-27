@@ -10,6 +10,7 @@ public class Nomen {
 	protected static final char MACRO_A = 'A';
 	protected static final char MACRO_C = 'C';
 	protected static final char MACRO_P = 'P';
+	protected static final char MACRO_K = 'K';
 	protected static final char MACRO_S = 'S';
 	protected static final char MACRO_COUNT = '.';
 
@@ -48,6 +49,17 @@ public class Nomen {
 		return this;
 	}
 
+	/**
+	 * Uses pokemon name.
+	 */
+	public Nomen pokemon() {
+		template += MACRO_K;
+		return this;
+	}
+
+	/**
+	 * Uses random superb name.
+	 */
 	public Nomen superb() {
 		template += MACRO_S;
 		return this;
