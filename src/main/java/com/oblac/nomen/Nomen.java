@@ -10,6 +10,7 @@ public class Nomen {
 	protected static final char MACRO_A = 'A';
 	protected static final char MACRO_C = 'C';
 	protected static final char MACRO_P = 'P';
+	protected static final char MACRO_S = 'S';
 	protected static final char MACRO_COUNT = '.';
 
 	protected String template = "";
@@ -46,6 +47,11 @@ public class Nomen {
 		return this;
 	}
 
+	public Nomen superb() {
+		template += MACRO_S;
+		return this;
+	}
+
 	/**
 	 * Defines the separator.
 	 */
@@ -63,14 +69,14 @@ public class Nomen {
 	}
 
 	public Nomen withCount(int count) {
-		return new NomenRuntime(this).withCount(count);
+		return new NomenOmen(this).withCount(count);
 	}
 
 	/**
 	 * Generates name based on given template.
 	 */
 	public String get() {
-		return new NomenRuntime(this).get();
+		return new NomenOmen(this).get();
 	}
 
 	/**

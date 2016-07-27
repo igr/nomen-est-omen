@@ -1,17 +1,22 @@
 package com.oblac.nomen;
 
-
-public class NomenRuntime extends Nomen {
+/**
+ * Names runtime, generator.
+ */
+public class NomenOmen extends Nomen {
 
 	private final Nomen nomen;
 	private int count;
 
-	NomenRuntime(Nomen nomen) {
+	NomenOmen(Nomen nomen) {
 		this.nomen = nomen;
 	}
 
+	/**
+	 * Defines runtime variable.
+	 */
 	@Override
-	public NomenRuntime withCount(int count) {
+	public NomenOmen withCount(int count) {
 		this.count = count;
 		return this;
 	}
@@ -38,6 +43,9 @@ public class NomenRuntime extends Nomen {
 					break;
 				case MACRO_P:
 					source = People.LIST;
+					break;
+				case MACRO_S:
+					source = Superb.LIST;
 					break;
 				case MACRO_COUNT:
 					if (count > 0) {

@@ -6,9 +6,10 @@ that you can use for some unique IDs :)
 
 Generated names may consist of:
 
-+ adjective
-+ color name
-+ person name
++ adjective (70 names)
++ color name (52 names)
++ person name (140 names)
++ superb name (108 names)
 + count (any number > 0)
 
 For example, you can get names such: `hungry_navy_babbage`
