@@ -14,6 +14,7 @@ public class Nomen {
 	protected static final char MACRO_COUNT = '.';
 
 	protected String template = "";
+	protected String space = "-";
 	protected String separator = "_";
 
 	/**
@@ -53,10 +54,18 @@ public class Nomen {
 	}
 
 	/**
-	 * Defines the separator.
+	 * Defines the separator between the names.
 	 */
 	public Nomen separator(String separator) {
 		this.separator = separator;
+		return this;
+	}
+
+	/**
+	 * Defines the space replacement string.
+	 */
+	public Nomen space(String space) {
+		this.space = space;
 		return this;
 	}
 

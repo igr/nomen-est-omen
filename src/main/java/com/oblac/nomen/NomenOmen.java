@@ -66,7 +66,30 @@ public class NomenOmen extends Nomen {
 			ndx++;
 		}
 
-		return out.toString();
+		String name = out.toString();
+
+		name = replace(name, " ", nomen.space);
+
+		return name;
+	}
+
+	public String replace(String s, String sub, String with) {
+		int c = 0;
+		int i = s.indexOf(sub, c);
+		if (i == -1) {
+			return s;
+		}
+		int sLen = s.length();
+		StringBuilder buf = new StringBuilder(sLen + with.length());
+		do {
+			buf.append(s.substring(c, i));
+			buf.append(with);
+			c = i + sub.length();
+		} while ((i = s.indexOf(sub, c)) != -1);
+		if (c < sLen) {
+			buf.append(s.substring(c, sLen));
+		}
+		return buf.toString();
 	}
 
 }
