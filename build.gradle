@@ -1,29 +1,22 @@
-plugins {
-    id "com.jfrog.bintray" version "1.6"
-}
-
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 apply plugin: 'java'
 apply plugin: 'signing'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 group = 'com.oblac'
-version = 1.2
+version = '1.2.1'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
+rootProject.description = 'Random names generator; for IDs or fun.'
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.+'
 }
-
-// -----------------------------------------------------------------------------
-// MAVEN
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
@@ -33,6 +26,10 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
+
+
+// -----------------------------------------------------------------------------
+// MAVEN
 
 artifacts {
     archives jar
@@ -44,93 +41,114 @@ signing {
     sign configurations.archives
 }
 
-bintray {
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_KEY')
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            customizePom(pom, rootProject)
+            from components.java
 
-    configurations = ['archives']
+            artifact sourcesJar
+            artifact javadocJar
 
-    dryRun = false
-    publish = true
+            // sign the pom
+            pom.withXml {
+                def pomFile = file("${project.buildDir}/generated-pom.xml")
+                writeTo(pomFile)
+                def pomAscFile = signing.sign(pomFile).signatureFiles[0]
+                artifact(pomAscFile) {
+                    classifier = null
+                    extension = 'pom.asc'
+                }
+                pomFile.delete()
+            }
 
-    pkg {
-        userOrg = 'oblac'
-        repo = 'java'
-        name = "com.oblac:${project.name}"
-        desc = 'Random name generator'
-        licenses = ['BSD 2-Clause']
-        vcsUrl = 'https://github.com/igorspasic/nomen-est-omen'
-        issueTrackerUrl = 'https://github.com/igorspasic/nomen-est-omen/issues'
-        publicDownloadNumbers = true
-
-        version {
-            name = project.version
-            vcsTag = project.version
+            // sign the artifacts
+            project.tasks.signArchives.signatureFiles.each {
+                artifact(it) {
+                    def matcher = it.file =~ /-(sources|javadoc)\.jar\.asc$/
+                    if (matcher.find()) {
+                        classifier = matcher.group(1)
+                    } else {
+                        classifier = null
+                    }
+                    extension = 'jar.asc'
+                }
+            }
         }
     }
-}
-
-install {
-    repositories.mavenInstaller {
-        customizePom(pom, project)
-    }
-}
-
-uploadArchives {
-    repositories.mavenDeployer {
-        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-        repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2') {
-            authentication(userName: sonatypeUsername, password: sonatypePassword)
+    repositories {
+        maven {
+            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                username sonatypeUsername
+                password sonatypePassword
+            }
         }
-        customizePom(pom, project)
     }
 }
 
 def customizePom(pom, gradleProject) {
-    pom.whenConfigured { generatedPom ->
+    pom.withXml {
+        def root = asNode()
 
         // eliminate test-scoped dependencies (no need in maven central POMs)
-        generatedPom.dependencies.removeAll { dep ->
+        root.dependencies.removeAll { dep ->
             dep.scope == "test"
         }
 
         // add all items necessary for maven central publication
-        generatedPom.project {
-            name = "Nomen est Omen"
-            description = "Random names generator"
-            url = 'https://github.com/igorspasic/nomen-est-omen'
+        root.children().last() + {
+            resolveStrategy = Closure.DELEGATE_FIRST
+
+            name 'Nomen est Omen'
+            description gradleProject.description
+            url 'https://github.com/igr/nomen-est-omen'
             organization {
-                name = 'Oblac'
-                url = 'http://oblac.com'
+                name 'Oblac'
+                url 'http://oblac.com'
             }
             issueManagement {
-                system = 'GitHub'
-                url = 'https://github.com/igorspasic/nomen-est-omen/issues'
+                system 'GitHub'
+                url 'https://github.com/igr/nomen-est-omen/issues'
             }
             licenses {
                 license {
                     name 'The New BSD License'
-                    url 'https://github.com/igorspasic/nomen-est-omen/blob/master/LICENSE'
+                    url 'https://github.com/igr/nomen-est-omen/blob/master/LICENSE'
                     distribution 'repo'
                 }
             }
             scm {
-                url = 'https://github.com/igorspasic/nomen-est-omen/'
-                connection = 'scm:git:git://github.com/igorspasic/nomen-est-omen.git'
-                developerConnection = 'scm:git:ssh://git@github.com/igorspasic/nomen-est-omen.git'
+                url 'https://github.com/igr/nomen-est-omen/'
+                connection 'scm:git:git://github.com/igr/nomen-est-omen.git'
+                developerConnection 'scm:git:ssh://git@github.com/igr/nomen-est-omen.git'
             }
             developers {
                 developer {
-                    id = 'igor'
-                    name = 'Igor Spasic'
-                    email = 'igor@jodd.org'
-                    timezone = '+1'
+                    id 'igor'
+                    name 'Igor Spasić'
+                    email 'igor@jodd.org'
+                    timezone '+1'
                 }
             }
         }
     }
 }
 
+model {
+    tasks.publishMavenJavaPublicationToMavenLocal {
+        dependsOn(project.tasks.signArchives)
+    }
+    tasks.publishMavenJavaPublicationToMavenRepository {
+        dependsOn(project.tasks.signArchives)
+    }
+}
+
+task install(dependsOn: publishToMavenLocal) {
+    group = 'Publishing'
+    description = 'Installs artifacts to local Maven repository'
+}
+
 task wrapper(type: Wrapper) {
-	gradleVersion = '2.12'
+    gradleVersion = '3.4.1'
 }
