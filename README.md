@@ -1,5 +1,7 @@
 # Nomen est Omen
 
+![](https://img.shields.io/maven-central/v/com.oblac/nomen-est-omen.svg)
+
 _"Your name is your destiny"_, so be sure you pick a good name.
 This Java library helps with generating some super-awesome random names
 that you can use for some unique IDs :)
@@ -24,7 +26,7 @@ It's complicated.
 
 In your Gradle or Maven project, add:
 
-    com.oblac:nomen-est-omen:1.2
+    com.oblac:nomen-est-omen:<version>
 
 ### 2. Use it
 
