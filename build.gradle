@@ -1,3 +1,7 @@
+plugins {
+    id 'io.codearte.nexus-staging' version '0.11.0'
+}
+
 repositories {
     mavenCentral()
 }
@@ -5,9 +9,10 @@ repositories {
 apply plugin: 'java'
 apply plugin: 'signing'
 apply plugin: 'maven-publish'
+apply plugin: 'io.codearte.nexus-staging'
 
 group = 'com.oblac'
-version = '1.2.1'
+version = '1.2.2'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -15,7 +20,7 @@ targetCompatibility = 1.7
 rootProject.description = 'Random names generator; for IDs or fun.'
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.+'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.0.0'
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -150,5 +155,5 @@ task install(dependsOn: publishToMavenLocal) {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.4.1'
+    gradleVersion = '4.1'
 }
