@@ -1,0 +1,14 @@
+{
+	"organization" : {
+        "name" : "Oblac",
+        "url" :  "https://oblac.com"
+    },
+    "developers" : {
+		"developer" : {
+			"id" : "igor",
+			"name" : "Igor Spasić",
+			"email" : "igor@jodd.org",
+			"timezone" : "+1"
+		}
+	}
+}

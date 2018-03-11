@@ -1,26 +1,28 @@
 package com.oblac.nomen;
 
+import com.oblac.nomen.fixture.TestNomen;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
-public class NomenTest {
+class NomenTest {
 
 	@Test
-	public void testShortName() {
+	void testShortName() {
 		String name = new TestNomen().adjective().person().count().get();
 		assertEquals("jodd_jodd", name);
 	}
 
 	@Test
-	public void testShortName_withCount() {
+	void testShortName_withCount() {
 		String name = new TestNomen().adjective().person().count().withCount(1).get();
 		assertEquals("jodd_jodd1", name);
 	}
 
 	@Test
-	public void testUsage() {
+	void testUsage() {
 		String name = Nomen.est().adjective().superb().person().pokemon().get();
 		assertNotNull(name);
 

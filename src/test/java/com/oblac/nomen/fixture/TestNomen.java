@@ -1,4 +1,6 @@
-package com.oblac.nomen;
+package com.oblac.nomen.fixture;
+
+import com.oblac.nomen.Nomen;
 
 /**
  * Test version.

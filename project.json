@@ -1,0 +1,12 @@
+{
+	"name" : "Nomen est Omen",
+	"description" : "Random names generator; for IDs or fun.",
+	"group" : "com.oblac",
+	"version" : "1.2.3",
+	"github" : "igr/nomen-est-omen",
+	"java" : "1.7",
+	"junit": "5.1.0",
+	"license" : "The New BSD License",
+	"compile" : [],
+	"test" : []
+}
