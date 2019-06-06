@@ -40,18 +40,18 @@ If you want to build your own template, e.g.:
 
 Variables are set using `withXxx()` methods:
 
-	Nomen.est().adjective().color().person().withCount(3).get();
+	Nomen.est().adjective().color().person().withSpace('/').get();
 	
 That is all.
 
-### 3. Optimise
+### 3. Optimise if you will
 
 Templates can be created once:
 
 	Nomen uigen = Nomen.est().adjective().person();
 	...
 	String id1 = uigen.get();
-	String id2 = uigen.withCount(7).get();
+	String id2 = uigen.get();
 
 Nice!
 
