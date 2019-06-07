@@ -1,6 +1,5 @@
 package com.oblac.nomen;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -186,5 +185,5 @@ public class Nomen {
 		return casing.apply(list[index]);
 	}
 
-	private static final Random RND = new SecureRandom();
+	private static final Random RND = new Random();
 }
