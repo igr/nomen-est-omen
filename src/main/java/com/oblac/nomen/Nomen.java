@@ -1,5 +1,13 @@
 package com.oblac.nomen;
 
+import com.oblac.nomen.data.Adjectives;
+import com.oblac.nomen.data.Animals;
+import com.oblac.nomen.data.Colors;
+import com.oblac.nomen.data.Nouns;
+import com.oblac.nomen.data.People;
+import com.oblac.nomen.data.Pokemon;
+import com.oblac.nomen.data.Superb;
+
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,6 +24,7 @@ public class Nomen {
 	protected final Supplier<String> ADJECTIVES = () -> randomValueFrom(Adjectives.LIST);
 	protected final Supplier<String> ANIMALS = () -> randomValueFrom(Animals.LIST);
 	protected final Supplier<String> COLORS = () -> randomValueFrom(Colors.LIST);
+	protected final Supplier<String> NOUNS = () -> randomValueFrom(Nouns.LIST);
 	protected final Supplier<String> PEOPLE = () -> randomValueFrom(People.LIST);
 	protected final Supplier<String> POKEMON = () -> randomValueFrom(Pokemon.LIST);
 	protected final Supplier<String> SUPERB = () -> randomValueFrom(Superb.LIST);
@@ -32,20 +41,23 @@ public class Nomen {
 	}
 
 	/**
-	 * Uses random adjective.
+	 * Appends an adjective.
 	 */
 	public Nomen adjective() {
 		template.add(ADJECTIVES);
 		return this;
 	}
 
+	/**
+	 * Appends literal value.
+	 */
 	public Nomen literal(final String literal) {
 		template.add(() -> literal);
 		return this;
 	}
 
 	/**
-	 * Uses random color name.
+	 * Appends color name.
 	 */
 	public Nomen color() {
 		template.add(COLORS);
@@ -53,7 +65,7 @@ public class Nomen {
 	}
 
 	/**
-	 * Uses random person name.
+	 * Appends person name.
 	 */
 	public Nomen person() {
 		template.add(PEOPLE);
@@ -69,7 +81,7 @@ public class Nomen {
 	}
 
 	/**
-	 * Uses animal name.
+	 * Appends pokemon name.
 	 */
 	public Nomen animal() {
 		template.add(ANIMALS);
@@ -77,7 +89,15 @@ public class Nomen {
 	}
 
 	/**
-	 * Uses random superb name.
+	 * Append a noun.
+	 */
+	public Nomen noun() {
+		template.add(NOUNS);
+		return this;
+	}
+
+	/**
+	 * Appends a superb name.
 	 */
 	public Nomen superb() {
 		template.add(SUPERB);
@@ -109,7 +129,7 @@ public class Nomen {
 	}
 
 	/**
-	 * Uses count value if greater then zero.
+	 * Appends a count.
 	 */
 	public Nomen count(int startValue) {
 		final AtomicInteger counter = new AtomicInteger(startValue);

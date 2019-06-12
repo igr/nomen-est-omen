@@ -1,4 +1,4 @@
-package com.oblac.nomen;
+package com.oblac.nomen.data;
 
 public final class People {
 	public static final String[] LIST = {
