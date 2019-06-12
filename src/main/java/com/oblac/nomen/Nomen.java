@@ -13,11 +13,12 @@ public class Nomen {
 
 	protected LinkedList<Supplier<String>> template = new LinkedList<>();
 
-	protected final Supplier<String> ADJECTIVES = () -> valueOf(Adjectives.LIST);
-	protected final Supplier<String> COLORS = () -> valueOf(Colors.LIST);
-	protected final Supplier<String> PEOPLE = () -> valueOf(People.LIST);
-	protected final Supplier<String> POKEMON = () -> valueOf(Pokemon.LIST);
-	protected final Supplier<String> SUPERB = () -> valueOf(Superb.LIST);
+	protected final Supplier<String> ADJECTIVES = () -> randomValueFrom(Adjectives.LIST);
+	protected final Supplier<String> ANIMALS = () -> randomValueFrom(Animals.LIST);
+	protected final Supplier<String> COLORS = () -> randomValueFrom(Colors.LIST);
+	protected final Supplier<String> PEOPLE = () -> randomValueFrom(People.LIST);
+	protected final Supplier<String> POKEMON = () -> randomValueFrom(Pokemon.LIST);
+	protected final Supplier<String> SUPERB = () -> randomValueFrom(Superb.LIST);
 
 	protected String space = "-";
 	protected String separator = "_";
@@ -64,6 +65,14 @@ public class Nomen {
 	 */
 	public Nomen pokemon() {
 		template.add(POKEMON);
+		return this;
+	}
+
+	/**
+	 * Uses animal name.
+	 */
+	public Nomen animal() {
+		template.add(ANIMALS);
 		return this;
 	}
 
@@ -180,7 +189,7 @@ public class Nomen {
 	 * @param list array of strings
 	 * @return random string from given array
 	 */
-	private String valueOf(String... list) {
+	private String randomValueFrom(String... list) {
 		final int index = RND.nextInt(list.length);
 
 		return list[index];

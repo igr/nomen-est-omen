@@ -1,6 +1,6 @@
 package com.oblac.nomen;
 
-public class Superb {
+public final class Superb {
 
 	public static final String[] LIST = new String[]{
 		"ace",

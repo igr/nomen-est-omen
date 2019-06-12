@@ -1,6 +1,6 @@
 package com.oblac.nomen;
 
-public class Pokemon {
+public final class Pokemon {
 	public static final String[] LIST = new String[]{
 		"abomasnow",
 		"abra",
