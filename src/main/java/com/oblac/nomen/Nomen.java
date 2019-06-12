@@ -1,7 +1,6 @@
 package com.oblac.nomen;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -12,7 +11,7 @@ import java.util.stream.Collectors;
  */
 public class Nomen {
 
-	protected List<Supplier<String>> template = new ArrayList<>();
+	protected LinkedList<Supplier<String>> template = new LinkedList<>();
 
 	protected final Supplier<String> ADJECTIVES = () -> valueOf(Adjectives.LIST);
 	protected final Supplier<String> COLORS = () -> valueOf(Colors.LIST);
@@ -35,13 +34,11 @@ public class Nomen {
 	 * Uses random adjective.
 	 */
 	public Nomen adjective() {
-		separator();
 		template.add(ADJECTIVES);
 		return this;
 	}
 
 	public Nomen literal(final String literal) {
-		separator();
 		template.add(() -> literal);
 		return this;
 	}
@@ -50,7 +47,6 @@ public class Nomen {
 	 * Uses random color name.
 	 */
 	public Nomen color() {
-		separator();
 		template.add(COLORS);
 		return this;
 	}
@@ -59,7 +55,6 @@ public class Nomen {
 	 * Uses random person name.
 	 */
 	public Nomen person() {
-		separator();
 		template.add(PEOPLE);
 		return this;
 	}
@@ -68,7 +63,6 @@ public class Nomen {
 	 * Uses pokemon name.
 	 */
 	public Nomen pokemon() {
-		separator();
 		template.add(POKEMON);
 		return this;
 	}
@@ -77,7 +71,6 @@ public class Nomen {
 	 * Uses random superb name.
 	 */
 	public Nomen superb() {
-		separator();
 		template.add(SUPERB);
 		return this;
 	}
@@ -111,7 +104,15 @@ public class Nomen {
 	 */
 	public Nomen count(int startValue) {
 		final AtomicInteger counter = new AtomicInteger(startValue);
-		template.add(() -> String.valueOf(counter.getAndIncrement()));
+
+		if (template.isEmpty()) {
+			template.add(() -> String.valueOf(counter.getAndIncrement()));
+		}
+		else {
+			final Supplier lastSupplier = template.removeLast();
+			template.add(() ->  lastSupplier.get() + String.valueOf(counter.getAndIncrement()));
+		}
+
 		return this;
 	}
 
@@ -119,11 +120,11 @@ public class Nomen {
 	 * Generates name based on given template.
 	 */
 	public String get() {
-		String name = template.stream().map(Supplier::get).collect(Collectors.joining());
-
-		name = replace(name, " ", space);
-
-		return name;
+		return template.stream()
+			.map(Supplier::get)
+			.map(s -> casing.apply(s))
+			.map(s -> replace(s, " ", space))
+			.collect(Collectors.joining(separator));
 	}
 
 
@@ -180,9 +181,9 @@ public class Nomen {
 	 * @return random string from given array
 	 */
 	private String valueOf(String... list) {
-		int index = RND.nextInt(list.length);
+		final int index = RND.nextInt(list.length);
 
-		return casing.apply(list[index]);
+		return list[index];
 	}
 
 	private static final Random RND = new Random();
