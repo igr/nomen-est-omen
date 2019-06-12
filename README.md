@@ -8,8 +8,10 @@ that you can use for some unique IDs :)
 
 Generated names may consist of:
 
-+ adjective (70+ names)
-+ color name (50+ names)
++ adjective (1400+)
++ animals (380+)
++ color name (80+)
++ nouns (850+)
 + person name (140+ names)
 + superb name (10+ names)
 + pokemon name (700+ names)

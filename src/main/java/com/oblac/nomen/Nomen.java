@@ -9,6 +9,7 @@ import com.oblac.nomen.data.Pokemon;
 import com.oblac.nomen.data.Superb;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -53,6 +54,15 @@ public class Nomen {
 	 */
 	public Nomen literal(final String literal) {
 		template.add(() -> literal);
+		return this;
+	}
+
+	public Nomen random(final List<String> strings) {
+		template.add(() -> randomValueFrom(strings));
+		return this;
+	}
+	public Nomen random(final String... strings) {
+		template.add(() -> randomValueFrom(strings));
 		return this;
 	}
 
@@ -213,6 +223,11 @@ public class Nomen {
 		final int index = RND.nextInt(list.length);
 
 		return list[index];
+	}
+	private String randomValueFrom(List<String> list) {
+		final int index = RND.nextInt(list.size());
+
+		return list.get(index);
 	}
 
 	private static final Random RND = new Random();
