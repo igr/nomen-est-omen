@@ -1,22 +1,27 @@
 package com.oblac.nomen;
 
+import java.util.LinkedList;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Random name generator.
  */
 public class Nomen {
 
-	protected static final char MACRO_A = 'A';
-	protected static final char MACRO_C = 'C';
-	protected static final char MACRO_P = 'P';
-	protected static final char MACRO_K = 'K';
-	protected static final char MACRO_S = 'S';
-	protected static final char MACRO_COUNT = '.';
+	protected LinkedList<Supplier<String>> template = new LinkedList<>();
 
-	protected String template = "";
+	protected final Supplier<String> ADJECTIVES = () -> valueOf(Adjectives.LIST);
+	protected final Supplier<String> COLORS = () -> valueOf(Colors.LIST);
+	protected final Supplier<String> PEOPLE = () -> valueOf(People.LIST);
+	protected final Supplier<String> POKEMON = () -> valueOf(Pokemon.LIST);
+	protected final Supplier<String> SUPERB = () -> valueOf(Superb.LIST);
+
 	protected String space = "-";
 	protected String separator = "_";
+	protected Casing casing = Casing.LOWERCASE;
 
 	/**
 	 * Starts with name building.
@@ -29,7 +34,12 @@ public class Nomen {
 	 * Uses random adjective.
 	 */
 	public Nomen adjective() {
-		template += MACRO_A;
+		template.add(ADJECTIVES);
+		return this;
+	}
+
+	public Nomen literal(final String literal) {
+		template.add(() -> literal);
 		return this;
 	}
 
@@ -37,7 +47,7 @@ public class Nomen {
 	 * Uses random color name.
 	 */
 	public Nomen color() {
-		template += MACRO_C;
+		template.add(COLORS);
 		return this;
 	}
 
@@ -45,7 +55,7 @@ public class Nomen {
 	 * Uses random person name.
 	 */
 	public Nomen person() {
-		template += MACRO_P;
+		template.add(PEOPLE);
 		return this;
 	}
 
@@ -53,7 +63,7 @@ public class Nomen {
 	 * Uses pokemon name.
 	 */
 	public Nomen pokemon() {
-		template += MACRO_K;
+		template.add(POKEMON);
 		return this;
 	}
 
@@ -61,14 +71,14 @@ public class Nomen {
 	 * Uses random superb name.
 	 */
 	public Nomen superb() {
-		template += MACRO_S;
+		template.add(SUPERB);
 		return this;
 	}
 
 	/**
 	 * Defines the separator between the names.
 	 */
-	public Nomen separator(String separator) {
+	public Nomen withSeparator(String separator) {
 		this.separator = separator;
 		return this;
 	}
@@ -76,35 +86,53 @@ public class Nomen {
 	/**
 	 * Defines the space replacement string.
 	 */
-	public Nomen space(String space) {
+	public Nomen withSpace(String space) {
 		this.space = space;
+		return this;
+	}
+
+	/**
+	 * Defines one of the casings.
+	 */
+	public Nomen withCasing(Casing casing) {
+		this.casing = casing;
 		return this;
 	}
 
 	/**
 	 * Uses count value if greater then zero.
 	 */
-	public Nomen count() {
-		template += MACRO_COUNT;
-		return this;
-	}
+	public Nomen count(int startValue) {
+		final AtomicInteger counter = new AtomicInteger(startValue);
 
-	public Nomen withCount(int count) {
-		return new NomenOmen(this).withCount(count);
+		if (template.isEmpty()) {
+			template.add(() -> String.valueOf(counter.getAndIncrement()));
+		}
+		else {
+			final Supplier lastSupplier = template.removeLast();
+			template.add(() ->  lastSupplier.get() + String.valueOf(counter.getAndIncrement()));
+		}
+
+		return this;
 	}
 
 	/**
 	 * Generates name based on given template.
 	 */
 	public String get() {
-		return new NomenOmen(this).get();
+		return template.stream()
+			.map(Supplier::get)
+			.map(s -> casing.apply(s))
+			.map(s -> replace(s, " ", space))
+			.collect(Collectors.joining(separator));
 	}
+
 
 	/**
 	 * Returns short random name that consist of an adjective and human name.
 	 */
 	public static String randomName() {
-		return randomName(0);
+		return Nomen.est().adjective().person().get();
 	}
 
 	/**
@@ -112,7 +140,39 @@ public class Nomen {
 	 * optional count.
 	 */
 	public static String randomName(int no) {
-		return Nomen.est().adjective().person().count().withCount(no).get();
+		return Nomen.est().adjective().person().count(no).get();
+	}
+
+	/**
+	 * Force usage of separator.
+	 */
+	public Nomen separator() {
+		if (!template.isEmpty()) {
+			template.add(() -> separator);
+		}
+		return this;
+	}
+
+	/**
+	 * Stolen from Jodd (http://jodd.org).
+	 */
+	private static String replace(String s, String sub, String with) {
+		int c = 0;
+		int i = s.indexOf(sub, c);
+		if (i == -1) {
+			return s;
+		}
+		int sLen = s.length();
+		StringBuilder buf = new StringBuilder(sLen + with.length());
+		do {
+			buf.append(s, c, i);
+			buf.append(with);
+			c = i + sub.length();
+		} while ((i = s.indexOf(sub, c)) != -1);
+		if (c < sLen) {
+			buf.append(s, c, sLen);
+		}
+		return buf.toString();
 	}
 
 	/**
@@ -120,11 +180,11 @@ public class Nomen {
 	 * @param list array of strings
 	 * @return random string from given array
 	 */
-	protected String random(String... list) {
-		int index = rnd.nextInt(list.length);
+	private String valueOf(String... list) {
+		final int index = RND.nextInt(list.length);
 
 		return list[index];
 	}
 
-	private static final Random rnd = new Random();
+	private static final Random RND = new Random();
 }
