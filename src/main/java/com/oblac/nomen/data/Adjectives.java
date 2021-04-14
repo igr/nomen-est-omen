@@ -904,7 +904,6 @@ public final class Adjectives {
 		"decent",
 		"unnecessary",
 		"flying",
-		"fucking",
 		"random",
 		"influential",
 		"dull",
