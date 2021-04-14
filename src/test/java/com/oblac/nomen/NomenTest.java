@@ -69,4 +69,10 @@ class NomenTest {
 		assertNotNull(name);
 	}
 
+	@Test
+	void testSuperhero() {
+		String name = new TestNomen().superhero().get();
+		assertEquals("mrs-bat-marvel-iii", name);
+	}
+
 }

@@ -15,10 +15,11 @@ Generated names may consist of:
 + person name (140+ names)
 + superb name (10+ names)
 + pokemon name (700+ names)
++ superheroes name (1800+ names)
 + count (any number > 0)
 
 For example, you can get names such: `hungry_navy_babbage`
-or `dreamy_cray`. Isn't this super great?
+or `dreamy-cray`. Isn't this super great?
 
 ## Usage
 

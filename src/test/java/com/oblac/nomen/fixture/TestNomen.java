@@ -36,4 +36,10 @@ public class TestNomen extends Nomen {
 		super.template.add(() -> "sup");
 		return this;
 	}
+
+	@Override
+	public Nomen superhero() {
+		super.template.add(() -> "Mrs BAT Marvel III");
+		return this;
+	}
 }

@@ -7,6 +7,7 @@ import com.oblac.nomen.data.Nouns;
 import com.oblac.nomen.data.People;
 import com.oblac.nomen.data.Pokemon;
 import com.oblac.nomen.data.Superb;
+import com.oblac.nomen.data.Superheroes;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class Nomen {
 	protected final Supplier<String> PEOPLE = () -> randomValueFrom(People.LIST);
 	protected final Supplier<String> POKEMON = () -> randomValueFrom(Pokemon.LIST);
 	protected final Supplier<String> SUPERB = () -> randomValueFrom(Superb.LIST);
+	protected final Supplier<String> SUPERHERO = () -> randomValueFrom(Superheroes.LIST);
 
 	protected String space = "-";
 	protected String separator = "_";
@@ -79,6 +81,14 @@ public class Nomen {
 	 */
 	public Nomen person() {
 		template.add(PEOPLE);
+		return this;
+	}
+
+	/**
+	 * Appends super-hero name.
+	 */
+	public Nomen superhero() {
+		template.add(SUPERHERO);
 		return this;
 	}
 
@@ -148,8 +158,8 @@ public class Nomen {
 			template.add(() -> String.valueOf(counter.getAndIncrement()));
 		}
 		else {
-			final Supplier lastSupplier = template.removeLast();
-			template.add(() ->  lastSupplier.get() + String.valueOf(counter.getAndIncrement()));
+			final Supplier<String> lastSupplier = template.removeLast();
+			template.add(() ->  lastSupplier.get() + counter.getAndIncrement());
 		}
 
 		return this;
@@ -162,10 +172,16 @@ public class Nomen {
 		return template.stream()
 			.map(Supplier::get)
 			.map(s -> casing.apply(s))
-			.map(s -> replace(s, " ", space))
+			.map(this::fixSpaces)
 			.collect(Collectors.joining(separator));
 	}
 
+	/**
+	 * Fix spaces.
+	 */
+	private String fixSpaces(String name) {
+		return replace(name, " ", space);
+	}
 
 	/**
 	 * Returns short random name that consist of an adjective and human name.
