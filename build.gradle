@@ -1,4 +1,8 @@
 plugins {
+    id 'java-library'
+    id 'signing'
+    id 'jacoco'
+    id 'maven-publish'
     id 'io.codearte.nexus-staging' version '0.30.0'
 }
 
@@ -7,19 +11,16 @@ repositories {
     mavenCentral()
 }
 
-apply plugin: 'idea'
-apply plugin: 'java'
-apply plugin: 'signing'
-apply plugin: 'jacoco'
-apply plugin: 'maven-publish'
-apply plugin: 'io.codearte.nexus-staging'
 
 group = 'com.oblac'
 version = '2.1.0'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    withSourcesJar()
+    withJavadocJar()
+}
 rootProject.description = 'Random names generator; for IDs or fun.'
 
 dependencies {
@@ -27,20 +28,10 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-if (JavaVersion.current().isJava8Compatible()) {
-    allprojects {
-        tasks.withType(Javadoc) {
-            options.addStringOption('Xdoclint:none', '-quiet')
-        }
+javadoc {
+    options.addStringOption('Xdoclint:none', '-quiet')
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
     }
 }
 
@@ -78,51 +69,41 @@ jacocoTestReport {
 
 ext.admin = hasProperty('sonatypeUsername')
 
-artifacts {
-    archives jar
-    archives sourcesJar
-    archives javadocJar
-}
-
-signing {
-    required { admin }
-    sign configurations.archives
-}
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            artifactId = 'nomen-est-omen'
             from components.java
-
-            customizePom(pom, rootProject)
-
-            artifact sourcesJar
-            artifact javadocJar
-
-            if (admin) {
-                // sign the pom
-                pom.withXml {
-                    def pomFile = file("${project.buildDir}/generated-pom.xml")
-                    writeTo(pomFile)
-                    def pomAscFile = signing.sign(pomFile).signatureFiles[0]
-                    artifact(pomAscFile) {
-                        classifier = null
-                        extension = 'pom.asc'
-                    }
-                    pomFile.delete()
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
                 }
-
-                // sign the artifacts
-                project.tasks.signArchives.signatureFiles.each {
-                    artifact(it) {
-                        def matcher = it.file =~ /-(sources|javadoc|jre9)\.jar\.asc$/
-                        if (matcher.find()) {
-                            classifier = matcher.group(1)
-                        } else {
-                            classifier = null
-                        }
-                        extension = 'jar.asc'
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = 'Nomen est Omen'
+                description = 'Random names generator; for IDs or fun.'
+                url = 'https://oblac.com"'
+                licenses {
+                    license {
+                        name = 'BSD-2-Clause'
+                        url = 'https://github.com/igr/nomen-est-omen/blob/master/LICENSE'
                     }
+                }
+                developers {
+                    developer {
+                        id = 'igor'
+                        name = 'Igor Spasić'
+                        email = 'igor@jodd.org'
+                        timezone = '+1'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/igr/nomen-est-omen.git'
+                    connection = 'scm:git:git://github.com/igr/nomen-est-omen.git'
+                    developerConnection = 'scm:git:ssh://git@github.com/igr/nomen-est-omen.git'
                 }
             }
         }
@@ -140,63 +121,9 @@ publishing {
     }
 }
 
-model {
-    tasks.publishMavenJavaPublicationToMavenLocal {
-        dependsOn(project.tasks.signArchives)
-    }
-    tasks.publishMavenJavaPublicationToMavenRepository {
-        dependsOn(project.tasks.signArchives)
-    }
-    tasks.publish {
-        dependsOn(project.tasks.build)
-    }
-    tasks.install {
-        dependsOn(project.tasks.build)
-    }
-}
-
-
-def customizePom(pom, gradleProject) {
-    pom.withXml {
-        def root = asNode()
-
-        // add all items necessary for maven central publication
-        root.children().last() + {
-            resolveStrategy = Closure.DELEGATE_FIRST
-
-            name 'Nomen est Omen'
-            description gradleProject.description
-            url 'https://githu.com/igr/nomen-est-omen'
-            organization {
-                name 'Oblac'
-                url 'https://oblac.com'
-            }
-            issueManagement {
-                system 'GitHub'
-                url 'https://github.com/igr/nomen-est-omen/issues'
-            }
-            licenses {
-                license {
-                    name 'The New BSD License'
-                    url 'https://github.com/igr/nomen-est-omen/blob/master/LICENSE'
-                    distribution 'repo'
-                }
-            }
-            scm {
-                url 'https://github.com/igr/nomen-est-omen'
-                connection 'scm:git:git://github.com/igr/nomen-est-omen.git'
-                developerConnection 'scm:git:ssh://git@github.com/igr/nomen-est-omen.git'
-            }
-            developers {
-                developer {
-                    email 'igor@jodd.org'
-                    timezone '+1'
-                    id 'igor'
-                    name 'Igor Spasić'
-                }
-            }
-        }
-    }
+signing {
+    required { admin }
+    sign publishing.publications.mavenJava
 }
 
 task install(dependsOn: publishToMavenLocal) {
@@ -212,6 +139,7 @@ task release() {
     group 'Project'
     description 'Builds everything for the release.'
 
+    dependsOn clean
     dependsOn build
     dependsOn javadoc
     dependsOn jacocoTestReport
