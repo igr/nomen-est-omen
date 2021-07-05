@@ -9,28 +9,27 @@ import com.oblac.nomen.data.Pokemon;
 import com.oblac.nomen.data.Superb;
 import com.oblac.nomen.data.Superheroes;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * Random name generator.
  */
 public class Nomen {
+	protected LinkedList<Callable<String>> template = new LinkedList<>();
 
-	protected LinkedList<Supplier<String>> template = new LinkedList<>();
-
-	protected final Supplier<String> ADJECTIVES = () -> randomValueFrom(Adjectives.LIST);
-	protected final Supplier<String> ANIMALS = () -> randomValueFrom(Animals.LIST);
-	protected final Supplier<String> COLORS = () -> randomValueFrom(Colors.LIST);
-	protected final Supplier<String> NOUNS = () -> randomValueFrom(Nouns.LIST);
-	protected final Supplier<String> PEOPLE = () -> randomValueFrom(People.LIST);
-	protected final Supplier<String> POKEMON = () -> randomValueFrom(Pokemon.LIST);
-	protected final Supplier<String> SUPERB = () -> randomValueFrom(Superb.LIST);
-	protected final Supplier<String> SUPERHERO = () -> randomValueFrom(Superheroes.LIST);
+	protected final Callable<String> ADJECTIVES = () -> randomValueFrom(Adjectives.LIST);
+	protected final Callable<String> ANIMALS = () -> randomValueFrom(Animals.LIST);
+	protected final Callable<String> COLORS = () -> randomValueFrom(Colors.LIST);
+	protected final Callable<String> NOUNS = () -> randomValueFrom(Nouns.LIST);
+	protected final Callable<String> PEOPLE = () -> randomValueFrom(People.LIST);
+	protected final Callable<String> POKEMON = () -> randomValueFrom(Pokemon.LIST);
+	protected final Callable<String> SUPERB = () -> randomValueFrom(Superb.LIST);
+	protected final Callable<String> SUPERHERO = () -> randomValueFrom(Superheroes.LIST);
 
 	protected String space = "-";
 	protected String separator = "_";
@@ -158,8 +157,8 @@ public class Nomen {
 			template.add(() -> String.valueOf(counter.getAndIncrement()));
 		}
 		else {
-			final Supplier<String> lastSupplier = template.removeLast();
-			template.add(() ->  lastSupplier.get() + counter.getAndIncrement());
+			final Callable<String> lastSupplier = template.removeLast();
+			template.add(() -> lastSupplier.call() + counter.getAndIncrement());
 		}
 
 		return this;
@@ -169,11 +168,29 @@ public class Nomen {
 	 * Generates name based on given template.
 	 */
 	public String get() {
-		return template.stream()
-			.map(Supplier::get)
-			.map(s -> casing.apply(s))
-			.map(this::fixSpaces)
-			.collect(Collectors.joining(separator));
+		try {
+			ArrayList<String> stringArrayList = new ArrayList<>();
+			for (Callable<String> callable : template) {
+				String result = fixSpaces(casing.apply(callable.call()));
+				stringArrayList.add(result);
+			}
+
+			int arraySize = stringArrayList.size();
+			StringBuilder stringBuilder = new StringBuilder();
+
+			for(int i = 0; i < arraySize; i++) {
+				stringBuilder.append(stringArrayList.get(i));
+				if(i < arraySize - 1) {
+					stringBuilder.append(separator);
+				}
+			}
+
+			return stringBuilder.toString();
+		} catch (Exception ex) {
+			// Ignored
+		}
+
+		return null;
 	}
 
 	/**
