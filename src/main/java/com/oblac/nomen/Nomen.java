@@ -13,7 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -21,16 +21,16 @@ import java.util.stream.Collectors;
  */
 public class Nomen {
 
-	protected LinkedList<Supplier<String>> template = new LinkedList<>();
+	protected LinkedList<Function<Random, String>> template = new LinkedList<>();
 
-	protected final Supplier<String> ADJECTIVES = () -> randomValueFrom(Adjectives.LIST);
-	protected final Supplier<String> ANIMALS = () -> randomValueFrom(Animals.LIST);
-	protected final Supplier<String> COLORS = () -> randomValueFrom(Colors.LIST);
-	protected final Supplier<String> NOUNS = () -> randomValueFrom(Nouns.LIST);
-	protected final Supplier<String> PEOPLE = () -> randomValueFrom(People.LIST);
-	protected final Supplier<String> POKEMON = () -> randomValueFrom(Pokemon.LIST);
-	protected final Supplier<String> SUPERB = () -> randomValueFrom(Superb.LIST);
-	protected final Supplier<String> SUPERHERO = () -> randomValueFrom(Superheroes.LIST);
+	protected final Function<Random, String> ADJECTIVES = rnd -> randomValueFrom(rnd, Adjectives.LIST);
+	protected final Function<Random, String> ANIMALS = rnd -> randomValueFrom(rnd, Animals.LIST);
+	protected final Function<Random, String> COLORS = rnd -> randomValueFrom(rnd, Colors.LIST);
+	protected final Function<Random, String> NOUNS = rnd -> randomValueFrom(rnd, Nouns.LIST);
+	protected final Function<Random, String> PEOPLE = rnd -> randomValueFrom(rnd, People.LIST);
+	protected final Function<Random, String> POKEMON = rnd -> randomValueFrom(rnd, Pokemon.LIST);
+	protected final Function<Random, String> SUPERB = rnd -> randomValueFrom(rnd, Superb.LIST);
+	protected final Function<Random, String> SUPERHERO = rnd -> randomValueFrom(rnd, Superheroes.LIST);
 
 	protected String space = "-";
 	protected String separator = "_";
@@ -55,16 +55,16 @@ public class Nomen {
 	 * Appends literal value.
 	 */
 	public Nomen literal(final String literal) {
-		template.add(() -> literal);
+		template.add(rnd -> literal);
 		return this;
 	}
 
 	public Nomen random(final List<String> strings) {
-		template.add(() -> randomValueFrom(strings));
+		template.add(rnd -> randomValueFrom(rnd, strings));
 		return this;
 	}
 	public Nomen random(final String... strings) {
-		template.add(() -> randomValueFrom(strings));
+		template.add(rnd -> randomValueFrom(rnd, strings));
 		return this;
 	}
 
@@ -155,11 +155,11 @@ public class Nomen {
 		final AtomicInteger counter = new AtomicInteger(startValue);
 
 		if (template.isEmpty()) {
-			template.add(() -> String.valueOf(counter.getAndIncrement()));
+			template.add(rnd -> String.valueOf(counter.getAndIncrement()));
 		}
 		else {
-			final Supplier<String> lastSupplier = template.removeLast();
-			template.add(() ->  lastSupplier.get() + counter.getAndIncrement());
+			final Function<Random, String> lastFunction = template.removeLast();
+			template.add(rnd ->  lastFunction.apply(rnd) + counter.getAndIncrement());
 		}
 
 		return this;
@@ -169,8 +169,15 @@ public class Nomen {
 	 * Generates name based on given template.
 	 */
 	public String get() {
+		return get(RND);
+	}
+
+	/**
+	 * Generates name based on given template.
+	 */
+	public String get(Random rnd) {
 		return template.stream()
-			.map(Supplier::get)
+			.map(func -> func.apply(rnd))
 			.map(s -> casing.apply(s))
 			.map(this::fixSpaces)
 			.collect(Collectors.joining(separator));
@@ -203,13 +210,13 @@ public class Nomen {
 	 */
 	public Nomen separator() {
 		if (!template.isEmpty()) {
-			template.add(() -> separator);
+			template.add(rnd -> separator);
 		}
 		return this;
 	}
 
 	/**
-	 * Stolen from Jodd (http://jodd.org).
+	 * Stolen from <a href="http://jodd.org">Jodd</a>.
 	 */
 	private static String replace(String s, String sub, String with) {
 		int c = 0;
@@ -235,13 +242,13 @@ public class Nomen {
 	 * @param list array of strings
 	 * @return random string from given array
 	 */
-	private String randomValueFrom(String... list) {
-		final int index = RND.nextInt(list.length);
+	private String randomValueFrom(Random rnd, String... list) {
+		final int index = rnd.nextInt(list.length);
 
 		return list[index];
 	}
-	private String randomValueFrom(List<String> list) {
-		final int index = RND.nextInt(list.size());
+	private String randomValueFrom(Random rnd, List<String> list) {
+		final int index = rnd.nextInt(list.size());
 
 		return list.get(index);
 	}

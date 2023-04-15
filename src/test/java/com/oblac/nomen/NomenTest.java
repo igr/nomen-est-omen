@@ -3,10 +3,10 @@ package com.oblac.nomen;
 import com.oblac.nomen.fixture.TestNomen;
 import org.junit.jupiter.api.Test;
 
+import java.util.Random;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 class NomenTest {
 
@@ -73,6 +73,13 @@ class NomenTest {
 	void testSuperhero() {
 		String name = new TestNomen().superhero().get();
 		assertEquals("mrs-bat-marvel-iii", name);
+	}
+
+	@Test
+	void testWithSpecificRandom() {
+		Random rnd = new Random(1234L);
+		String name = Nomen.est().adjective().superb().person().pokemon().withCasing(Casing.LOWERCASE).get(rnd);
+		assertEquals("purring_groovy_volhard_magneton", name);
 	}
 
 }
