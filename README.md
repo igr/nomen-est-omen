@@ -1,10 +1,10 @@
-# Nomen est Omen
+# 🦄 Nomen est Omen
 
 ![](https://img.shields.io/maven-central/v/com.oblac/nomen-est-omen.svg)
 
 _"Your name is your destiny"_, so be sure you pick a good name.
 This Java library helps with generating some super-awesome random names
-that you can use for some unique IDs :)
+that you can use for some unique IDs or passwords :)
 
 Generated names may consist of:
 
@@ -31,17 +31,19 @@ In your Gradle or Maven project, add:
 
     com.oblac:nomen-est-omen:<version>
 
+There are **0** dependencies.
+
 ### 2. Use it
 
 If you just want a short name (adjective and person name):
 
 	Nomen.randomName();
 
-If you want to build your own template, e.g.:
+If you want to build your own **template**, e.g.:
 
 	Nomen.est().adjective().color().person().get();
 
-Variables are set using `withXxx()` methods:
+**Configure** it using `withXxx()` methods:
 
 	Nomen.est().adjective().color().person().withSpace('/').get();
 	
@@ -49,7 +51,7 @@ That is all.
 
 ### 3. Optimise if you will
 
-Templates can be created once:
+Templates can be created once and reused:
 
 	Nomen uigen = Nomen.est().adjective().person();
 	...

@@ -3,6 +3,8 @@ package com.oblac.nomen;
 import com.oblac.nomen.fixture.TestNomen;
 import org.junit.jupiter.api.Test;
 
+import java.util.Random;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -75,4 +77,10 @@ class NomenTest {
 		assertEquals("mrs-bat-marvel-iii", name);
 	}
 
+	@Test
+	void testWithSpecificRandom() {
+		Random rnd = new Random(1234L);
+		String name = Nomen.est().adjective().superb().person().pokemon().withCasing(Casing.LOWERCASE).withRandom(rnd).get();
+		assertEquals("purring_groovy_volhard_magneton", name);
+	}
 }
