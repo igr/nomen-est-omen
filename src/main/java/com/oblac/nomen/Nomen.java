@@ -23,14 +23,14 @@ public class Nomen {
 
 	protected LinkedList<Supplier<String>> template = new LinkedList<>();
 
-	protected final Supplier<String> ADJECTIVES = () -> randomValueFrom(rnd, Adjectives.LIST);
-	protected final Supplier<String> ANIMALS = () -> randomValueFrom(rnd, Animals.LIST);
-	protected final Supplier<String> COLORS = () -> randomValueFrom(rnd, Colors.LIST);
-	protected final Supplier<String> NOUNS = () -> randomValueFrom(rnd, Nouns.LIST);
-	protected final Supplier<String> PEOPLE = () -> randomValueFrom(rnd, People.LIST);
-	protected final Supplier<String> POKEMON = () -> randomValueFrom(rnd, Pokemon.LIST);
-	protected final Supplier<String> SUPERB = () -> randomValueFrom(rnd, Superb.LIST);
-	protected final Supplier<String> SUPERHERO = () -> randomValueFrom(rnd, Superheroes.LIST);
+	protected final Supplier<String> ADJECTIVES = () -> randomValueFrom(Adjectives.LIST);
+	protected final Supplier<String> ANIMALS = () -> randomValueFrom(Animals.LIST);
+	protected final Supplier<String> COLORS = () -> randomValueFrom(Colors.LIST);
+	protected final Supplier<String> NOUNS = () -> randomValueFrom(Nouns.LIST);
+	protected final Supplier<String> PEOPLE = () -> randomValueFrom(People.LIST);
+	protected final Supplier<String> POKEMON = () -> randomValueFrom(Pokemon.LIST);
+	protected final Supplier<String> SUPERB = () -> randomValueFrom(Superb.LIST);
+	protected final Supplier<String> SUPERHERO = () -> randomValueFrom(Superheroes.LIST);
 
 	protected String space = "-";
 	protected String separator = "_";
@@ -60,11 +60,11 @@ public class Nomen {
 	}
 
 	public Nomen random(final List<String> strings) {
-		template.add(() -> randomValueFrom(rnd, strings));
+		template.add(() -> randomValueFrom(strings));
 		return this;
 	}
 	public Nomen random(final String... strings) {
-		template.add(() -> randomValueFrom(rnd, strings));
+		template.add(() -> randomValueFrom(strings));
 		return this;
 	}
 
@@ -243,16 +243,16 @@ public class Nomen {
 	 * @param list array of strings
 	 * @return random string from given array
 	 */
-	private String randomValueFrom(Random rnd, String... list) {
+	private String randomValueFrom(String... list) {
 		final int index = rnd.nextInt(list.length);
 
 		return list[index];
 	}
-	private String randomValueFrom(Random rnd, List<String> list) {
+	private String randomValueFrom(List<String> list) {
 		final int index = rnd.nextInt(list.size());
 
 		return list.get(index);
 	}
 
-	private static Random rnd = new Random();
+	private Random rnd = new Random();
 }
