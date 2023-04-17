@@ -1,6 +1,7 @@
 # 🦄 Nomen est Omen
 
 ![](https://img.shields.io/maven-central/v/com.oblac/nomen-est-omen.svg)
+[![Java CI with Gradle](https://github.com/igr/nomen-est-omen/actions/workflows/gradle.yml/badge.svg)](https://github.com/igr/nomen-est-omen/actions/workflows/gradle.yml)
 
 _"Your name is your destiny"_, so be sure you pick a good name.
 This Java library helps with generating some super-awesome random names
